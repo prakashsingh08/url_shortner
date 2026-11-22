@@ -15,6 +15,19 @@ request_id_var: ContextVar[str | None] = ContextVar("request_id", default=None)
 
 _INSTANCE = socket.gethostname()
 
+# Stamp the current request ID on every record when it is created, so it survives
+# even if the record is formatted later (or captured by tests).
+_base_factory = logging.getLogRecordFactory()
+
+
+def _record_factory(*args, **kwargs) -> logging.LogRecord:
+    record = _base_factory(*args, **kwargs)
+    record.requestId = request_id_var.get()
+    return record
+
+
+logging.setLogRecordFactory(_record_factory)
+
 
 class JsonFormatter(logging.Formatter):
     def __init__(self, service: str):
@@ -31,7 +44,7 @@ class JsonFormatter(logging.Formatter):
             "logger": record.name,
             "msg": record.getMessage(),
         }
-        request_id = request_id_var.get()
+        request_id = getattr(record, "requestId", None) or request_id_var.get()
         if request_id:
             entry["requestId"] = request_id
         fields = getattr(record, "fields", None)

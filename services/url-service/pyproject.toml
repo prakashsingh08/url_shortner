@@ -9,6 +9,10 @@ markers = [
     "scenario(capability, name): links a test to an OpenSpec scenario",
 ]
 addopts = "-ra"
+filterwarnings = [
+    # Starlette 1.x suggests httpx2 for TestClient; httpx still works and is what we pin.
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]
 
 [tool.ruff]
 line-length = 100

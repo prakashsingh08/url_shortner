@@ -54,7 +54,8 @@ test-integration: ## Integration tests against the Compose PostgreSQL
 
 test-api: env ## Restart the stack with APP_ENV=test and run API tests through Nginx
 	APP_ENV=test $(COMPOSE) up -d --build --wait
-	cd $(SVC) && $(PY) -m pytest tests/api
+	# APP_ENV is also passed to pytest so stack restores inside tests keep test mode.
+	cd $(SVC) && APP_ENV=test $(PY) -m pytest tests/api $(ARGS)
 
 lint: ## Lint and check formatting
 	cd $(SVC) && $(VENV)/bin/ruff check . && $(VENV)/bin/ruff format --check .
