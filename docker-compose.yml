@@ -1,6 +1,21 @@
 name: url-shortener
 
 services:
+  nginx:
+    image: nginx:1.27.3-alpine
+    ports: ["${HTTP_PORT:-8080}:80"]
+    environment:
+      NGINX_RATE_LIMIT: ${NGINX_RATE_LIMIT:-50r/s}
+    volumes:
+      - ./infra/nginx/templates:/etc/nginx/templates:ro
+    depends_on:
+      url-service: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/nginx-health"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
+
   postgres-primary:
     image: postgres:16.4
     environment:

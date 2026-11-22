@@ -23,10 +23,10 @@
 - [x] 3.8 Graceful shutdown on SIGTERM (LLD §7.5, minus the click-queue flush)
 
 ## 4. Edge & orchestration
-- [ ] 4.1 Add `infra/nginx/templates/default.conf.template` (design D4)
-- [ ] 4.2 Add `nginx` and `url-service` (2 replicas, no host port) to `docker-compose.yml`
-- [ ] 4.3 Verify: `make up` from a clean clone → all services healthy; `curl localhost:8080/health/ready` → 200
-- [ ] 4.4 Verify: `make scale N=3` → requests are spread across 3 instances (check the `upstream` field in Nginx access logs)
+- [x] 4.1 Add `infra/nginx/templates/default.conf.template` (design D4)
+- [x] 4.2 Add `nginx` and `url-service` (2 replicas, no host port) to `docker-compose.yml`
+- [x] 4.3 Verify: `make up` from a clean clone → all services healthy; `curl localhost:8080/health/ready` → 200
+- [x] 4.4 Verify: `make scale N=3` → requests are spread across 3 instances (check the `upstream` field in Nginx access logs)
 
 ## 5. Tests
 - [ ] 5.1 Unit tests: config validation, request-ID acceptance rules, error mapping
