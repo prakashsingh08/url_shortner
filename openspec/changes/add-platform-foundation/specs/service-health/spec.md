@@ -35,14 +35,19 @@ The system SHALL expose `GET /health/ready`, which returns `200` only when the P
 - **AND** they do not affect the response status
 
 ### Requirement: One-Command Local Stack
-The system SHALL start with `docker compose up` (core profile) from a clean clone plus a `.env` copied from `.env.example`. Database migrations SHALL complete before any url-service instance starts, and the platform SHALL be reachable at `http://localhost:8080`.
+The system SHALL start with `docker compose up` (core profile) from a clean clone plus a `.env` copied from `.env.example`. Database migrations SHALL complete before any url-service instance starts, and the platform SHALL be reachable at `http://localhost:${HTTP_PORT}`, where `HTTP_PORT` is set in `.env` and defaults to `8080`.
 
 #### Scenario: Clean start
 - **GIVEN** no containers or volumes exist
 - **WHEN** the developer runs `make up`
 - **THEN** `nginx`, `postgres-primary` and every `url-service` replica report healthy
 - **AND** `migrate` exits with code 0 before any `url-service` container starts
-- **AND** `GET http://localhost:8080/health/ready` returns `200`
+- **AND** `GET http://localhost:${HTTP_PORT}/health/ready` returns `200`
+
+#### Scenario: Host port already in use
+- **GIVEN** another program already listens on port 8080
+- **WHEN** the developer sets `HTTP_PORT=8081` in `.env` and runs `make up`
+- **THEN** the platform is reachable at `http://localhost:8081`
 
 #### Scenario: Missing required configuration
 - **GIVEN** `DB_PRIMARY_URL` is not set

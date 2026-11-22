@@ -2,9 +2,9 @@
 
 ## 1. Decisions & repo setup
 - [x] 1.1 Choose application language/framework → **Python 3.14 + FastAPI (basic)**; recorded in `openspec/project.md` and LLD §1
-- [ ] 1.2 Extend the existing `.gitignore` (add build outputs, test caches, IDE files) and `.env.example` (core-profile variables from LLD §9.4)
-- [ ] 1.3 Add `requirements.txt` / `requirements-dev.txt` (pinned) and install them into `.venv`
-- [ ] 1.4 Add `Makefile` targets: `up`, `down`, `nuke`, `logs`, `ps`, `psql`, `scale`, `test`, `test-api`
+- [x] 1.2 Extend the existing `.gitignore` (add build outputs, test caches, IDE files) and `.env.example` (core-profile variables from LLD §9.4)
+- [x] 1.3 Add `requirements.txt` / `requirements-dev.txt` (pinned) and install them into `.venv`
+- [x] 1.4 Add `Makefile` targets: `up`, `down`, `nuke`, `logs`, `ps`, `psql`, `scale`, `test`, `test-api`
 
 ## 2. Database
 - [ ] 2.1 Add `infra/postgres/migrations/V1__baseline.sql` creating `system_settings`
