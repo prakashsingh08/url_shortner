@@ -55,7 +55,7 @@ Rules:
 
 | # | OpenSpec change ID | Feature | Requirements | Depends on | Compose profile | Status |
 |---|---|---|---|---|---|---|
-| F-01 | `add-platform-foundation` | Service skeleton, Nginx, PostgreSQL, Flyway, health probes, error format, logging, test harness | NFR-06, AC-10, §10 (format) | — | core | **Proposed** |
+| F-01 | `add-platform-foundation` | Service skeleton, Nginx, PostgreSQL, Flyway, health probes, error format, logging, test harness | NFR-06, AC-10, §10 (format) | — | core | **In Progress** |
 | F-02 | `add-user-auth` | Register, login, JWT, `USER`/`ADMIN` roles, admin bootstrap | §4.2, §4.3, NFR-05 | F-01 | core | Planned |
 | F-03 | `add-url-shortening` | `POST /api/v1/urls`, URL validation, ID blocks + Feistel + Base62, idempotency keys | FR-01, FR-02, NFR-04, AC-1, AC-2, AC-4 | F-02 | core | Planned |
 | F-04 | `add-url-redirect` | `GET/HEAD /{code}`, 302 / 404 / 410, HTML vs JSON errors | FR-03, NFR-01, AC-3, AC-5 | F-03 | core | Planned |

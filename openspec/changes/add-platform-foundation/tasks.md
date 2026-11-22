@@ -2,7 +2,7 @@
 
 ## 1. Decisions & repo setup
 - [x] 1.1 Choose application language/framework → **Python 3.14 + FastAPI (basic)**; recorded in `openspec/project.md` and LLD §1
-- [ ] 1.2 Add `.gitignore` (`.env`, build outputs, IDE files) and `.env.example` (core-profile variables from LLD §9.4)
+- [ ] 1.2 Extend the existing `.gitignore` (add build outputs, test caches, IDE files) and `.env.example` (core-profile variables from LLD §9.4)
 - [ ] 1.3 Add `requirements.txt` / `requirements-dev.txt` (pinned) and install them into `.venv`
 - [ ] 1.4 Add `Makefile` targets: `up`, `down`, `nuke`, `logs`, `ps`, `psql`, `scale`, `test`, `test-api`
 
@@ -19,6 +19,7 @@
 - [ ] 3.5 Request-ID middleware (design D6)
 - [ ] 3.6 Problem-details error handler: `AppException` hierarchy, malformed JSON → 400, unknown route → 404, unexpected → 500 (LLD §7.2)
 - [ ] 3.7 `GET /health/live` and `GET /health/ready` (design D2)
+- [ ] 3.7a Serve OpenAPI at `/api/openapi.json` and docs at `/api/docs`; disable `/docs`, `/redoc`, `/openapi.json`
 - [ ] 3.8 Graceful shutdown on SIGTERM (LLD §7.5, minus the click-queue flush)
 
 ## 4. Edge & orchestration
