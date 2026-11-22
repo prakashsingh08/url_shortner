@@ -44,15 +44,21 @@ When all checks pass: `git switch -c feature/<change-id>`. Report the branch nam
 
 Work only inside `openspec/` and `docs/` in this phase. **No application code.**
 
-1. If `openspec/changes/<change-id>/` already exists, read it and update it to match the description and the current state of `openspec/specs/`. Otherwise create it.
-2. Write or update, following the format in `openspec/AGENTS.md`:
+1. **If `openspec/changes/<change-id>/` already exists: validate only, do not create or rewrite.**
+   - Do **not** create new spec files and do **not** edit the existing ones (proposal, design, tasks or spec deltas).
+   - Run only the validation in step 3 below against the existing files. Also check that the change still matches the roadmap row and the user's description.
+   - Report the result: ✅ valid, or a list of problems with file and line.
+   - If there are problems, **stop and ask** whether to fix them. Edit the existing files only after a yes, and change only what was reported.
+   - Skip step 2 entirely. After validation passes (or the approved fixes are made), go to step 4.
+2. **Only when the folder does not exist:** create it and write the following, using the format in `openspec/AGENTS.md`:
    - `proposal.md`: Why / What Changes / Impact, including the requirement IDs from the roadmap row.
    - `design.md`: only if there are real decisions to record. Base it on the relevant HLD/LLD sections and the stack in `project.md`.
    - `specs/<capability>/spec.md`: deltas (`## ADDED` / `## MODIFIED` / `## REMOVED Requirements`). Every requirement uses SHALL/MUST and has at least one `#### Scenario:` with WHEN/THEN. A MODIFIED requirement is copied in full from `openspec/specs/` and then edited.
    - `tasks.md`: numbered, ordered checklist ending with tests, Docker Compose verification, doc updates and roadmap status.
-3. Validate:
-   - If the `openspec` CLI is installed: `openspec validate <change-id> --strict`, and fix all errors.
+3. Validate (used for both new and existing changes):
+   - If the `openspec` CLI is installed: `openspec validate <change-id> --strict`.
    - Otherwise, check by hand: every `### Requirement:` has a `#### Scenario:`, delta headers are correct, and every requirement ID from the roadmap row is covered.
+   - For a **new** change you just wrote, fix any errors yourself. For an **existing** change, only report them and ask (step 1).
 4. In `docs/features/features-v1.md`, set the feature's status to `Proposed`.
 5. Show the user a short summary: capabilities touched, number of requirements and scenarios, and the most important decisions. Include the paths to the files.
 
