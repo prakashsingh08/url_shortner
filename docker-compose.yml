@@ -1,0 +1,74 @@
+name: url-shortener
+
+services:
+  nginx:
+    image: nginx:1.27.3-alpine
+    ports: ["${HTTP_PORT:-8080}:80"]
+    environment:
+      NGINX_RATE_LIMIT: ${NGINX_RATE_LIMIT:-50r/s}
+    volumes:
+      - ./infra/nginx/templates:/etc/nginx/templates:ro
+    depends_on:
+      url-service: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/nginx-health"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
+
+  postgres-primary:
+    image: postgres:16.4
+    environment:
+      POSTGRES_DB: urlshortener
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    command: >
+      postgres
+      -c max_connections=100
+      -c shared_buffers=256MB
+    ports: ["5432:5432"]
+    volumes:
+      - pg-primary-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d urlshortener"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  migrate:
+    image: flyway/flyway:10.17.3
+    command: >
+      -url=jdbc:postgresql://postgres-primary:5432/urlshortener
+      -user=app -password=${POSTGRES_PASSWORD}
+      -locations=filesystem:/flyway/sql -connectRetries=10 migrate
+    volumes:
+      - ./infra/postgres/migrations:/flyway/sql:ro
+    depends_on:
+      postgres-primary: { condition: service_healthy }
+    restart: "no"
+
+  url-service:
+    build: ./services/url-service
+    # No host port and no container_name, so `--scale url-service=N` works.
+    deploy:
+      replicas: ${URL_SERVICE_REPLICAS:-2}
+    environment:
+      APP_ENV: ${APP_ENV:-local}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      APP_PORT: 8000
+      DB_PRIMARY_URL: postgresql://app:${POSTGRES_PASSWORD}@postgres-primary:5432/urlshortener
+      DB_POOL_SIZE_WRITE: 10
+      SHUTDOWN_DRAIN_SECONDS: 2
+      SHUTDOWN_TIMEOUT_SECONDS: 10
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    stop_grace_period: 15s
+
+volumes:
+  pg-primary-data:

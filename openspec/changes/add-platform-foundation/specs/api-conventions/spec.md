@@ -51,6 +51,22 @@ Every response SHALL carry an `X-Request-Id` header. The service SHALL reuse an 
 - **WHEN** a request arrives directly at the service with `X-Request-Id: <script>`
 - **THEN** the response carries a newly generated `X-Request-Id` matching `^[A-Za-z0-9-]{8,64}$`
 
+### Requirement: API Documentation
+The system SHALL publish its OpenAPI schema at `GET /api/openapi.json` and interactive API documentation at `GET /api/docs`, both reachable through Nginx. The framework's default documentation paths (`/docs`, `/redoc`, `/openapi.json`) SHALL be disabled so they never compete with short codes.
+
+#### Scenario: OpenAPI schema available
+- **WHEN** a client sends `GET http://localhost:8080/api/openapi.json`
+- **THEN** the response status is `200` with `Content-Type: application/json`
+- **AND** the body is a valid OpenAPI 3 document listing the `/health/live` and `/health/ready` paths
+
+#### Scenario: Interactive docs available
+- **WHEN** a client sends `GET http://localhost:8080/api/docs`
+- **THEN** the response status is `200` with an HTML page that loads `/api/openapi.json`
+
+#### Scenario: Default docs paths disabled
+- **WHEN** a client sends `GET /docs` or `GET /redoc`
+- **THEN** the response status is `404` with a problem-details body (not a documentation page)
+
 ### Requirement: Structured Logging
 url-service SHALL write one JSON object per log line to stdout, containing at least `ts`, `level`, `service`, `instance`, `requestId` (when in a request) and `msg`, and SHALL log each completed API request with `method`, `route`, `status` and `latencyMs`. Logs SHALL NOT contain passwords, tokens or full request bodies.
 

@@ -61,6 +61,12 @@ services/url-service/
 └── tests/{unit,integration,api}/
 ```
 
+### D8. Configurable host port
+Nginx publishes `${HTTP_PORT:-8080}:80`. The developer's machine already uses 8080 for another project, so the local `.env` sets `HTTP_PORT=8081`. Tests read `BASE_URL` (default `http://localhost:${HTTP_PORT}`). Wherever the docs say `localhost:8080`, read it as `localhost:${HTTP_PORT}`.
+
+### D9. Exit code 0 on SIGTERM
+uvicorn re-raises the captured signal after a graceful shutdown, so the process would end with exit code 143. The service's server subclass overrides `capture_signals` so it does not re-raise. A completed graceful shutdown then exits with 0, as the Graceful Shutdown requirement says. During the drain window (`SHUTDOWN_DRAIN_SECONDS`, default 2 s), the instance keeps serving but `/health/ready` returns 503. After that, uvicorn stops accepting connections and waits up to 10 s for in-flight requests.
+
 ## Risks / Trade-offs
 - **2 replicas from day one** costs a little memory but catches accidental in-process state early.
 
