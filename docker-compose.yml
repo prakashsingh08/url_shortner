@@ -32,5 +32,28 @@ services:
       postgres-primary: { condition: service_healthy }
     restart: "no"
 
+  url-service:
+    build: ./services/url-service
+    # No host port and no container_name, so `--scale url-service=N` works.
+    deploy:
+      replicas: ${URL_SERVICE_REPLICAS:-2}
+    environment:
+      APP_ENV: ${APP_ENV:-local}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      APP_PORT: 8000
+      DB_PRIMARY_URL: postgresql://app:${POSTGRES_PASSWORD}@postgres-primary:5432/urlshortener
+      DB_POOL_SIZE_WRITE: 10
+      SHUTDOWN_DRAIN_SECONDS: 2
+      SHUTDOWN_TIMEOUT_SECONDS: 10
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    stop_grace_period: 15s
+
 volumes:
   pg-primary-data:
