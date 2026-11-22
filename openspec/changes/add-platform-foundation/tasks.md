@@ -7,9 +7,9 @@
 - [x] 1.4 Add `Makefile` targets: `up`, `down`, `nuke`, `logs`, `ps`, `psql`, `scale`, `test`, `test-api`
 
 ## 2. Database
-- [ ] 2.1 Add `infra/postgres/migrations/V1__baseline.sql` creating `system_settings`
-- [ ] 2.2 Add `postgres-primary` and `migrate` (Flyway) services to `docker-compose.yml` with health checks
-- [ ] 2.3 Verify: `docker compose up migrate` exits 0 and `flyway_schema_history` shows V1
+- [x] 2.1 Add `infra/postgres/migrations/V1__baseline.sql` creating `system_settings`
+- [x] 2.2 Add `postgres-primary` and `migrate` (Flyway) services to `docker-compose.yml` with health checks
+- [x] 2.3 Verify: `docker compose up migrate` exits 0 and `flyway_schema_history` shows V1
 
 ## 3. url-service skeleton
 - [ ] 3.1 Create `services/url-service/` with `api / application / domain / infrastructure` modules and a `Dockerfile` based on `python:3.14-slim` (non-root user; health check via `python -c` + `urllib`, no `wget` needed)

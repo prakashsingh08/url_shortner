@@ -1,0 +1,36 @@
+name: url-shortener
+
+services:
+  postgres-primary:
+    image: postgres:16.4
+    environment:
+      POSTGRES_DB: urlshortener
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    command: >
+      postgres
+      -c max_connections=100
+      -c shared_buffers=256MB
+    ports: ["5432:5432"]
+    volumes:
+      - pg-primary-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d urlshortener"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  migrate:
+    image: flyway/flyway:10.17.3
+    command: >
+      -url=jdbc:postgresql://postgres-primary:5432/urlshortener
+      -user=app -password=${POSTGRES_PASSWORD}
+      -locations=filesystem:/flyway/sql -connectRetries=10 migrate
+    volumes:
+      - ./infra/postgres/migrations:/flyway/sql:ro
+    depends_on:
+      postgres-primary: { condition: service_healthy }
+    restart: "no"
+
+volumes:
+  pg-primary-data:
