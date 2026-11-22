@@ -67,6 +67,13 @@ Nginx publishes `${HTTP_PORT:-8080}:80`. The developer's machine already uses 80
 ### D9. Exit code 0 on SIGTERM
 uvicorn re-raises the captured signal after a graceful shutdown, so the process would end with exit code 143. The service's server subclass overrides `capture_signals` so it does not re-raise. A completed graceful shutdown then exits with 0, as the Graceful Shutdown requirement says. During the drain window (`SHUTDOWN_DRAIN_SECONDS`, default 2 s), the instance keeps serving but `/health/ready` returns 503. After that, uvicorn stops accepting connections and waits up to 10 s for in-flight requests.
 
+### D10. Passive upstream failure handling (known limitation)
+Nginx uses `resolve` (2 s DNS refresh), `max_fails=1 fail_timeout=10s`, `proxy_connect_timeout 1s` and up to 3 attempts for GET/HEAD.
+
+**Known issue:** for about 2 s after a replica is killed, one request can still fail with `504`. Nginx sizes a request's retry budget from its current DNS list, and around the refresh that list can briefly hold only the dead replica, so that request gets no retry. After the refresh, all requests succeed. In 5 manual trials, at most 1 request failed per trial.
+
+The scenario "Replica failure" is kept as written. Its test is marked `xfail` (non-strict) and tracked for **F-14 `add-resilience-testing`**, which should add active health checking (e.g. a health-checking proxy, or Nginx configured from Docker events) and make the test strict again.
+
 ## Risks / Trade-offs
 - **2 replicas from day one** costs a little memory but catches accidental in-process state early.
 
