@@ -68,7 +68,7 @@ Rules:
 | F-11 | `add-admin-moderation` | Disable/enable, domain blocklist, audit log, `/admin/stats` | FR-08, §4.3 | F-08 | core | Planned |
 | F-12 | `add-read-scaling` | PG streaming replica, read routing, replica-miss fallback, read-your-writes | NFR-02, NFR-03, Phase 5 | F-08 | ha | Planned |
 | F-13 | `add-observability` | Prometheus metrics, exporters, Grafana dashboards | NFR-07 | F-10 | obs | Planned |
-| F-14 | `add-resilience-testing` | k6 load scenarios, chaos runbook, NFR-01/02 verification report | NFR-01–03, Phase 6 | F-12, F-13 | all | Planned |
+| F-14 | `add-resilience-testing` | k6 load scenarios, chaos runbook, NFR-01/02 verification report; **fix F-01 known issue:** 504 for ~2 s after a replica is killed (add active health checks, make the `Replica failure` test strict) | NFR-01–03, Phase 6 | F-12, F-13 | all | Planned |
 
 Status values: `Planned` → `Proposed` (change folder exists) → `Approved` → `In Progress` → `Done` (archived).
 

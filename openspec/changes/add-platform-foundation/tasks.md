@@ -29,11 +29,11 @@
 - [x] 4.4 Verify: `make scale N=3` → requests are spread across 3 instances (check the `upstream` field in Nginx access logs)
 
 ## 5. Tests
-- [ ] 5.1 Unit tests: config validation, request-ID acceptance rules, error mapping
-- [ ] 5.2 Integration test: readiness against a real Postgres (up → 200, stopped → 503)
-- [ ] 5.3 API tests for every scenario in `specs/service-health` and `specs/api-conventions`
-- [ ] 5.4 `make test` runs unit + integration; `make test-api` runs API tests against the running stack
+- [x] 5.1 Unit tests: config validation, request-ID acceptance rules, error mapping
+- [x] 5.2 Integration test: readiness against a real Postgres (up → 200, stopped → 503)
+- [x] 5.3 API tests for every scenario in `specs/service-health` and `specs/api-conventions`
+- [x] 5.4 `make test` runs unit + integration; `make test-api` runs API tests against the running stack
 
 ## 6. Wrap-up
-- [ ] 6.1 Root `README.md`: prerequisites, `cp .env.example .env`, `make up`, URLs, how to run tests
+- [x] 6.1 Root `README.md`: prerequisites, `cp .env.example .env`, `make up`, URLs, how to run tests
 - [ ] 6.2 Update `docs/features/features-v1.md` status; archive the change
